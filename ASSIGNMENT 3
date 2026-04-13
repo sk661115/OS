@@ -1,0 +1,75 @@
+#include <stdio.h>
+
+void findWaitingTime(int process[],int n, int bt[], int wt[] ){
+    wt[0] = 0;
+    for(int i = 1; i<n;i++){
+        wt[i] = bt[i-1] + wt[i-1];
+    }
+}
+
+void findTurnAroundTime(int process[], int n ,int bt[],int wt[], int tat[]){
+    for(int i = 0; i < n; i++){
+        tat[i] = bt[i] + wt[i];
+    }
+}
+
+void findCompletionTime(int process[],int n, int bt[],int wt[],int ct[]){
+    for(int i = 0; i<n;i++){
+        ct[i] = bt[i]+wt[i];
+    }
+}
+
+void findAvgTime(int process[], int n, int bt[], int bt1[]){
+    
+    int wt[n], ct[n], tat[n], pct[n];   
+    
+    int total_wt = 0, total_tat = 0;
+
+
+    pct[0] = bt1[0];
+    for(int i=1;i<n;i++){
+        pct[i] = pct[i-1] + bt1[i];
+    }
+
+    findWaitingTime(process,n,bt,wt);
+    findTurnAroundTime(process,n,bt,wt,tat);
+    findCompletionTime(process,n,bt,wt,ct);
+
+    for(int  i = 0; i<n;i++){
+        
+        total_wt+=wt[i];
+        total_tat+= tat[i];
+
+        printf("\nProcess id : %d\n",i);
+        printf("Partial Completion Time = %d\n",pct[i]);  
+        printf("Full Completion Time = %d\n",ct[i]);      
+        printf("Waiting Time = %d \n",wt[i]);
+        printf("Turn Around Time = %d\n",tat[i]);
+    }
+
+    float s = (float)total_wt/(float)n;
+    float t = (float)total_tat/(float)n;
+
+    printf("\nAvg wt time = %f\n",s);
+    printf("\nAvg turn around time = %f\n",t);
+}
+
+int main(){
+
+    int process[] = {0,1,2,3,4};
+    int n = sizeof(process)/sizeof(process[0]);
+
+    int bt1[] = {5,7,6,8,5};
+    int io[]  = {2,2,3,1,2};
+    int bt2[] = {3,2,4,2,5};
+
+    int totalBT[n];
+
+    for(int i=0;i<n;i++){
+        totalBT[i] = bt1[i] + io[i] + bt2[i];
+    }
+
+    findAvgTime(process,n,totalBT,bt1);
+
+    return 0;
+}
